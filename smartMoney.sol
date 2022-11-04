@@ -1,23 +1,27 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract SmartMoney{
-    uint public balanceReceived;
+contract Mapping2{
+    mapping (address => uint) public balanceReceived;
 
-    function deposit() public payable{
-         balanceReceived += msg.value;
-    }
+    
+  function getBalance() public view returns(uint){
+      return address(this).balance;
+  }
 
-    function getContractBalance() public view returns(uint){
-        return address(this).balance;
+     function sendMoney() public payable{
+         balanceReceived[msg.sender] += msg.value;
     }
+/*
+When someone sends money using the "sendMoney" function, we track the msg.value 
+(amount in Wei) with the balanceReceived mapping for the person who interacted with the 
+Smart Contract.
+*/
+  
+  function widthDrawAllMoney(address payable _to) public {
+     uint balanceToSend = balanceReceived[msg.sender];
+     balanceReceived[msg.sender] = 0;
+     _to.transfer(balanceToSend);
+  }
 
-    function widthdrawAll() public {
-        address payable to = payable(msg.sender);
-        to.transfer(getContractBalance());
-    }
-
-    function widthdrawToAddress(address payable to) public {
-        to.transfer(getContractBalance());
-    }
 }
